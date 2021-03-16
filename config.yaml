@@ -1,0 +1,28 @@
+# splash engine config file
+
+db_config:
+  user: postgres
+  password: kapow123
+  host: 13.233.125.141
+  port: 5432
+  database: postgres
+  queries:
+    top_ten:
+
+default_db_config:
+  target_table: splash_engine
+  config_table: splash_config
+default_table_schema:
+  target_table:
+    columns:
+    data_types:
+  config_table:
+    columns:
+    data_types:
+aws_config:
+
+
+batch_settings:
+
+
+gen_settings:
