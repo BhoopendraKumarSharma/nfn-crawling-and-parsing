@@ -18,7 +18,7 @@ sudo pip3 install requests-html==0.10.0
 sudo pip3 install scipy==1.2.0
 sudo pip3 install selenium==3.141.0
 sudo apt install unzip
-sudo mkdir -p /home/ubuntu/code
+sudo mkdir -p /home/ubuntu/splash_engine
 sudo chmod -R 777  /home/ubuntu/splash_engine
 sudo chown -R ubuntu /home/ubuntu/splash_engine
 sudo chgrp -R ubuntu /home/ubuntu/splash_engine
