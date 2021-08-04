@@ -1,0 +1,10 @@
+﻿domain,pageurl,xpath,fieldname,fieldtype,parsed value
+www.bouldercef.com,https://www.bouldercef.com/the-fund,"(//table[@id=""performanceTableID_monthly""]/following::td[contains(text(),'Index')]/text())[1]",Benchmark 1,Table - Others,Morningstar U.S. Large Value Index
+www.hennessyfunds.com,https://www.hennessyfunds.com/funds/cornerstone-growth,(//div[@class='media__bd']/span)[9],Portfolio Assets Date,Table - Multiple Funds,2021-03-31T00:00:00
+www.bouldercef.com,https://www.bouldercef.com/the-fund,"(//table[@id=""performanceTableID_monthly""]/following::td[contains(text(),'Index')]/text())[2]",Benchmark 2,Table - Others,S&P 500 Total Return Index
+www.hennessyfunds.com,https://www.hennessyfunds.com/funds/cornerstone-growth,(//div[@class='media__bd']/span)[9],Turnover Rate Date,Table - Multiple Funds,2021-03-31T00:00:00
+www.hennessyfunds.com,https://www.hennessyfunds.com/funds/cornerstone-growth,"//td[contains(text(),'Total Fund Assets')]/following-sibling::td",Total Net Assets,Table - Multiple Funds,$168 Million
+www.hennessyfunds.com,https://www.hennessyfunds.com/funds/cornerstone-growth,"//td[contains(text(),'Total Fund Assets')]/following-sibling::td",Portfolio Assets,Table - Multiple Funds,$168 Million
+www.hennessyfunds.com,https://www.hennessyfunds.com/funds/cornerstone-growth,"//td[contains(text(),'Portfolio Turnover')]/following-sibling::td",Turnover Rate,Table - Multiple Funds,124%
+www.hennessyfunds.com,https://www.hennessyfunds.com/funds/cornerstone-growth,"//td[contains(text(),'Inception Date (HFCGX)')]/following-sibling::td",Share Inception Date,Table - Multiple Funds,1996-11-01T00:00:00
+www.bridgebuildermutualfunds.com,http://www.bridgebuildermutualfunds.com/fund-listing/bridge-builder-core-bond-fund/,"(//div[@aria-labelledby=""fusion-tab-performance""]//table)[1]//tbody//tr[position() >1]//td[1]",Benchmark 1,Table - Single Fund,Bloomberg Barclays U.S. Aggregate Bond Index
