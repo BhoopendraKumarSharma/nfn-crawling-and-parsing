@@ -1,5 +1,5 @@
 #!/bin/bash
 cd /home/ubuntu/splash_engine
-sudo python3 crawling_engine.py
+python3 crawling_engine.py
 echo "deployment_succesful" > /home/ubuntu/deployment_success.txt
 Collapse
