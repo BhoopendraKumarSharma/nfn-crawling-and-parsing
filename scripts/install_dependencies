@@ -19,7 +19,7 @@ sudo pip3 install scipy==1.2.0
 sudo pip3 install selenium==3.141.0
 sudo apt install unzip
 sudo mkdir -p /home/ubuntu/code
-sudo chmod -R 777  /home/ubuntu/code
-sudo chown -R ubuntu /home/ubuntu/code
-sudo chgrp -R ubuntu /home/ubuntu/code
-sudo ls -ltrh /home/ubuntu/code
+sudo chmod -R 777  /home/ubuntu/splash_engine
+sudo chown -R ubuntu /home/ubuntu/splash_engine
+sudo chgrp -R ubuntu /home/ubuntu/splash_engine
+sudo ls -ltrh /home/ubuntu/splash_engine
