@@ -1,13 +1,12 @@
 #!/bin/bash
 sudo apt-get -y update
-sudo apt-get -y install python3.7.4
+sudo apt-get -y install python3
 sudo apt-get -y install python3-pip
 sudo pip3 install requests
 sudo pip3 install pandas==1.0.1
-sudo pip3 install numpy==1.17.1
 sudo pip3 install pymongo
 sudo pip3 install setuptools-rust
-sudo pip3 install boto3
+sudo pip3 install boto3==1.13.16
 sudo pip3 install lxml==4.5.0
 sudo pip3 install aiohttp==3.7.3
 sudo pip3 install asyncio==3.4.3
@@ -15,8 +14,10 @@ sudo pip3 install html-table-parser==0.1.0
 sudo pip3 install html-table-parser-python3==0.1.5
 sudo pip3 install requests==2.23.0
 sudo pip3 install requests-html==0.10.0
-sudo pip3 install scipy==1.2.0
+sudo pip3 install scipy==1.2.0 --
 sudo pip3 install selenium==3.141.0
+sudo pip3 install psycopg2-binary==2.9.1
+sudo pip3 install PyYAML==5.1.2
 sudo apt install unzip
 sudo mkdir -p /home/ubuntu/splash_engine
 sudo chmod -R 777  /home/ubuntu/splash_engine
