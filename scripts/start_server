@@ -1,0 +1,6 @@
+#!/bin/bash
+sudo scrapyd > scrapyd.log &
+cd /home/ubuntu/code/aionics-forage
+sudo python3 /home/ubuntu/splash_engine/crawling_engine.py
+echo "deployment_succesful" > /home/ubuntu/deployment_success.txt
+Collapse
