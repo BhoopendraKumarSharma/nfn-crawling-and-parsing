@@ -17,6 +17,17 @@ def get_db_config(filename):
     return data
 
 
+
+def url_lookup(url):
+    """
+    :param url: url to be checked for
+    :return: if file already exists in s3 bucket, download the file rather than crawling again
+    """
+
+
+
+
+
 def save_to_s3(html_data, url):
     """
     :param html_data: data in html format with utf-8 encoding
@@ -37,4 +48,4 @@ def save_to_s3(html_data, url):
                                               "htmlfile_path": 'dev/' + filename + '.html'})
         return {'url': url, 'status': 'file uploaded successfully', 'file_name': 'dev/' + filename + '.html'}
     else:
-        return {'url': url, 'status': 'upload failed', 'Exception': status}
+        return {'url': url, 'status': 'upload failed', 'Exception': str(status)}

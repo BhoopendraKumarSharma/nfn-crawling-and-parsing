@@ -2,10 +2,6 @@
 a module to read data (urls) from database
 
 """
-
-import os
-import pathlib
-import logging
 import pandas as pd
 import yaml
 import psycopg2
@@ -17,30 +13,95 @@ def get_db_config(filename):
     return data
 
 
-def read_data_from_file(filepath, batchsize):
-    """
-    :param filepath: (string) full path of file
-    :param batchsize: (int) number of rows to be read in one request
-    :return: urls to be loaded
-    """
-    # check if given file path is valid
-    is_valid = os.path.exists(filepath)
-    if not is_valid:
-        logging.debug("file path provided for 'read_data_from_file' does not exist")
-        return None
-
-    # check file type - json or cvs
-    # /Users/bhupi/Desktop/[DarkNightRises]/Rho/Rho Deployment/imput_data.csv
-    file_extension = pathlib.Path(filepath).suffix
-    if file_extension == "csv":
-        input_data = pd.read_csv(filepath, na_filter=False, encoding='utf-8-sig')
-        # select top rows as per batch size
-
-    elif file_extension == "json":
-        pass
-
-
+# select setval ('crawling_engine_nfn_id_seq', (select max(id) from crawling_engine_nfn ))
 # noinspection PyUnboundLocalVariable
+
+def read_data_from_sql_query(sql_query):
+    """
+    :param sql_query: sql query to get the required data
+    :return: a pandas dataframe with required data
+    """
+
+    try:
+
+        db_config = get_db_config("config.yaml")
+
+        user = db_config["db_config"]["user"]
+        password = db_config["db_config"]["password"]
+        host = db_config["db_config"]["host"]
+        port = db_config["db_config"]["port"]
+        database = db_config["db_config"]["database"]
+
+        connection = psycopg2.connect(user=user,
+                                      password=password,
+                                      host=host,
+                                      port=port,
+                                      database=database)
+
+        cursor = connection.cursor()
+
+        data = pd.read_sql_query(sql_query, connection)
+        # add null exception here with the query clause
+        # print(records)
+        # urls = [str(r[3]) for r in records]
+    except (Exception, psycopg2.Error) as error:
+        return "Error in read/update operation: " + str(error)
+    else:
+        return data
+    finally:
+        # closing database connection.
+        if connection:
+            cursor.close()
+            connection.close()
+
+
+
+
+def get_crawled_data_from_table(table_name):
+    """
+    :param table_name:
+    :return:
+    """
+
+    connection = None
+    cursor = None
+    try:
+
+        db_config = get_db_config("config.yaml")
+
+        user = db_config["db_config"]["user"]
+        password = db_config["db_config"]["password"]
+        host = db_config["db_config"]["host"]
+        port = db_config["db_config"]["port"]
+        database = db_config["db_config"]["database"]
+
+        connection = psycopg2.connect(user=user,
+                                      password=password,
+                                      host=host,
+                                      port=port,
+                                      database=database)
+
+        cursor = connection.cursor()
+
+        # print("Table Before updating record ")
+        sql_select_query = """select * from public.{} where status = 'Crawled' """.format(table_name)
+        # print(sql_select_query)
+        cursor.execute(sql_select_query)
+        records = cursor.fetchall()
+        # add null exception here with the query clause
+        # print(records)
+        # urls = [str(r[3]) for r in records]
+    except (Exception, psycopg2.Error) as error:
+        return "Error in read/update operation: " + str(error)
+    else:
+        return records
+    finally:
+        # closing database connection.
+        if connection:
+            cursor.close()
+            connection.close()
+
+
 def get_rows_from_table(table_name, batch_size):
     """
 
@@ -48,7 +109,6 @@ def get_rows_from_table(table_name, batch_size):
     :param batch_size: number of rows to be fetched
     :return: a list of tuples, one tuple for each row
     """
-
 
     """
         Add exception for null
@@ -71,26 +131,26 @@ def get_rows_from_table(table_name, batch_size):
 
         cursor = connection.cursor()
 
-        print("Table Before updating record ")
-        sql_select_query = """select * from public.{} where status = 'New' limit {}""".format(table_name, batch_size)
-        print(sql_select_query)
+        # print("Table Before updating record ")
+        sql_select_query = """select * from public.{} where status = 'New'""".format(table_name)
+        # print(sql_select_query)
         cursor.execute(sql_select_query)
         records = cursor.fetchall()
         # add null exception here with the query clause
-        print(records)
-        ids = ', '.join([str(record[0]) for record in records])
-        print(ids)
+        # print(records)
+        ids = ', '.join([str(record[3]) for record in records])
+        # print(ids)
 
         # set status to in progress
         # update the status later
-        sql_update_query = """ update {} set status = 'New', timestamp = CURRENT_TIMESTAMP
+        sql_update_query = """ update {} set status = 'InQueue', timestamp = CURRENT_TIMESTAMP
                                     where id in ({}) """.format(table_name, ids)
 
         cursor.execute(sql_update_query)
         connection.commit()
         count = cursor.rowcount
 
-    except (Exception, psycopg2.Error) as error:
+    except Exception as error:
         return "Error in read/update operation: " + str(error)
     else:
         return records
@@ -99,7 +159,7 @@ def get_rows_from_table(table_name, batch_size):
         if connection:
             cursor.close()
             connection.close()
-            print("PostgreSQL connection is closed")
+
 
 
 # noinspection PyUnboundLocalVariable
@@ -114,11 +174,12 @@ def insert_records_to_table(table_name, **column_name_and_values):
         # create the column_name and column_value lists
         columns_names = ', '.join([key for key in column_name_and_values.keys()])
         column_values = ', '.join(["'" + value + "'" for value in column_name_and_values.values()])
-
+        # print(columns_names)
+        # print(column_values)
         # create insert statement
 
         sql_insert_statement = """ INSERT INTO {} ({}) VALUES ({});""".format(table_name, columns_names, column_values)
-
+        # print(sql_insert_statement)
         db_config = get_db_config("config.yaml")
 
         user = db_config["db_config"]["user"]
@@ -135,12 +196,14 @@ def insert_records_to_table(table_name, **column_name_and_values):
 
         cursor = connection.cursor()
         conn_active = True
-
+        # print('trying insert statement')
         cursor.execute(sql_insert_statement)
+        # print('insert statement completed')
         connection.commit()
         count = cursor.rowcount
+        # print(count)
 
-    except (Exception, psycopg2.Error) as error:
+    except Exception as error:
         return "Error in read/update operation: " + str(error)
     else:
         return str(count) + ": Record(s) Inserted successfully"
@@ -170,7 +233,7 @@ def update_records_to_table(table_name, *ids_list, **column_name_and_values):
         sql_update_statement = """ UPDATE {} 
                                     
                                 SET {} where id in ({})""".format(table_name, values, ids)
-        print(sql_update_statement)
+        # print(sql_update_statement)
         db_config = get_db_config("config.yaml")
 
         user = db_config["db_config"]["user"]
@@ -191,7 +254,7 @@ def update_records_to_table(table_name, *ids_list, **column_name_and_values):
         count = cursor.rowcount
 
 
-    except (Exception, psycopg2.Error) as error:
+    except Exception as error:
         return "Error in read/update operation: " + str(error)
     else:
         return str(count) + ": Record(s) Updated successfully"

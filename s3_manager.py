@@ -1,5 +1,5 @@
 """
-a module to download and upload files to s3
+a module to download and upload html_files to s3
 
 """
 

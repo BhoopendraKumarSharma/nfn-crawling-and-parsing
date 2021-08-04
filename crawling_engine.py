@@ -1,12 +1,14 @@
-from asyncio import gather, create_task
-from aiohttp import web, ClientSession
-from bs4 import BeautifulSoup
-import json, uuid, os
-from s3_manager import s3_upload
-from db_manager import insert_records_to_table
 import lxml.html
-from gen_parser import *
-from crawling_functions import *
+import os
+import uuid
+
+import lxml.html
+from aiohttp import web, ClientSession
+
+from db_manager import *
+from gen_parser.funds.dividend_history_parser import get_dividend_history
+from gen_parser.tables.extract_tables import get_tables
+from s3_manager import *
 
 
 async def crawl(request):
@@ -57,7 +59,7 @@ async def parser(url, data_struct):
         f'http://localhost:8050/render.html?'
         f'url={url}&timeout=60&wait=1'
     )
-
+    response_data = None
     async with ClientSession() as session:
         async with session.get(proxy_url) as resp:
             html_data = await resp.read()
@@ -66,8 +68,8 @@ async def parser(url, data_struct):
         response_data = get_dividend_history(parsing_data)
         # number_of_tables = len(tables)
         # tables_data = "\n".join([str(pd.DataFrame(tables[i])) for i in range(number_of_tables)])
-    elif data_struct == 'dividend_history':
-        pass
+    elif data_struct == 'tables':
+        response_data = get_tables(parsing_data)
     return {'url': url, 'status': 'success', 'response': response_data}
 
 
@@ -104,7 +106,7 @@ async def get_html_by_xpath(request):
                 else:
                     result = {'url': url, 'response': sliced_text, 'status': 'upload failed', 'Exception': status}
             else:
-                result = {'url': url, 'status': 'success', 'response': sliced_text, 'action': 'not availabke'}
+                result = {'url': url, 'status': 'success', 'response': sliced_text, 'action': 'not available'}
         else:
             result = {'url': request_params['url'], 'status': 'success', 'response': sliced_text}
     else:
